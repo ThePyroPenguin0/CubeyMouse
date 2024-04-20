@@ -1,7 +1,7 @@
 class Smiley extends Phaser.Scene {
     constructor() {
         super("smileyScene");
-        this.my = {sprite: {}};  // Create an object to hold sprite bindings
+        this.my = { sprite: {} };  // Create an object to hold sprite bindings
 
         // Create variables to hold constant values for sprite locations
         this.bodyX = 400;
@@ -18,9 +18,11 @@ class Smiley extends Phaser.Scene {
 
         this.rightHandX = this.bodyX + 125;
         this.rightHandY = this.bodyY + 20;
-        
+
         this.counter = 0;
         this.smileType = 'Smile';
+
+        this.M_key = null;
     }
 
     // Use preload to load art and sound assets before the scene starts running.
@@ -49,7 +51,7 @@ class Smiley extends Phaser.Scene {
         // Create the two sprites, one for each type of smile
         my.sprite.smile = this.add.sprite(this.smileX, this.smileY, "smile");
         my.sprite.dimple = this.add.sprite(this.smileX, this.smileY, "smileDimple");
-        
+
         // Create the sprite for the left and right hands
         my.sprite.leftOpenHand = this.add.sprite(this.leftHandX, this.lefthandY, "handOpen");
         my.sprite.leftOpenHand.flipX = true;   // flip sprite to have thumb on correct side
@@ -58,33 +60,15 @@ class Smiley extends Phaser.Scene {
         // Since sprites are visible when created and we only want one smile to be shown
         // at a time, make the "dimple" smile not visible to start.
         my.sprite.dimple.visible = false;
+        this.M_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+        this.input.on('pointerdown', function (pointer) {
+            console.log('down');
+            this.add.image(pointer.x, pointer.y, 'yellowBody');
+            this.add.image(pointer.x, pointer.y + 20, 'smile');
+        }, this);
     }
 
     update() {
-        let my = this.my;    // create an alias to this.my for readability
-
-        // Since update is called multiple times/second, this.counter acts like
-        // a timer, increasing once per clock tick
-        this.counter++;
-
-        if (this.counter % 120 == 0) {  // Do this once every 120 calls to update()
-            switch (this.smileType) {
-                case "Smile":
-                    // Currently a regular smile, so change to dimple smile
-                    this.smileType = "Dimple";
-                    my.sprite.smile.visible = false;
-                    my.sprite.dimple.visible = true;
-                    break;
-                case "Dimple":
-                    // Currently a dimple smile, so change to regular smile
-                    this.smileType = "Smile";
-                    my.sprite.dimple.visible = false;
-                    my.sprite.smile.visible = true;
-                    break;
-                default:
-                    console.log("Error: unknown smile");
-            }
-        }
     }
 
 }
